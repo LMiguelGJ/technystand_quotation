@@ -1,0 +1,61 @@
+<odoo>
+    <data>
+        <record id="view_order_form_inherit_technystand" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.technystand</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='note_group']" position="before">
+                    <style>
+                        .custom-bold {
+                            font-weight: bold !important;
+                        }
+                    </style>
+                    <group col="6" class="d-flex flex-column align-items-end ">
+                        <div class="d-flex flex-column align-items-end custom-bold">
+                            <field name="section_totals" nolabel="1" widget="text" readonly="1" class="text-end"/>
+                        </div>
+                    </group>
+                </xpath>
+
+
+                <xpath expr="//group[@name='sale_header']" position="inside">
+                    <!-- Eliminando el formato de formulario y ajustando a la nueva estructura -->
+                    <style>
+                        label {
+                            font-weight: bold !important;
+                        }
+                    </style>
+                    <div class="o_td_label d-flex">
+                        <label for="forma_pago" string="Forma de Pago:" class="text-nowrap"/>
+                        <field name="forma_pago"/>
+                    </div>
+                    <div class="o_td_label d-flex">
+                        <label for="origen_materiales" string="Origen de los Materiales:" class="text-nowrap"/>
+                        <field name="origen_materiales"/>
+                    </div>
+                    <div class="o_td_label d-flex">
+                        <label for="garantia_comercial" string="Garantía Comercial:" class="text-nowrap"/>
+                        <field name="garantia_comercial"/>
+                    </div>
+                    <div class="o_td_label d-flex">
+                        <label for="tiempo_entrega" string="Tiempo de entrega:" class="text-nowrap"/>
+                        <field name="tiempo_entrega"/>
+                    </div>
+                    <!-- <div class="o_field_widget o_field_widget_text d-flex align-items-center">
+                        <label class="o_form_label me-2 text-nowrap" string="Cuenta Bancaria:" for="bank_account_info"/>
+                        <field name="bank_account_info" class="o_field_text" widget="char"/>
+                    </div> -->
+                    <div class="o_td_label d-flex">
+                        <label for="bank_account_info" string="Lugar de Retiro:" class="text-nowrap"/>
+                        <field name="bank_account_info"/>
+                    </div>
+                    <div class="o_td_label d-flex">
+                        <label for="pickup_location" string="Lugar de Retiro:" class="text-nowrap"/>
+                        <field name="pickup_location"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="custom_invoice_external_layout">
+            <t t-if="not o and doc">
+                <t t-set="o" t-value="doc"/>
+            </t>
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"/>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+            <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+                <div class="row">
+                    <div class="col-6 text-start mb-2">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 45px;" alt="Logo"/>
+                    </div>
+                    <div class="col-6 text-end mb-2">
+                        <img t-if="company.favicon" t-att-src="image_data_uri(company.favicon)" style="max-height: 45px;" alt="Logo"/>
+                    </div>
+                    <div class="col-9 text-end" style="margin-top:22px;" t-field="company.report_header" name="moto"/>
+                </div>
+                <div t-if="company.logo or company.report_header" class="row zero_min_height">
+                    <div class="col-12">
+                        <div style="border-bottom: 1px solid black;"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6" name="company_address">
+                        <h2 class="mt-1">
+                            <strong>Cotización:</strong>
+                            <span>#                                <span t-field="o.name"/>
+                            </span>
+                        </h2>
+                        <p class="my-1" style="font-size: smaller;">
+                            <strong class="fs-6">Fecha: </strong>
+                            <span t-field="o.date_order"/>
+                        </p>
+                        <t t-if="o.partner_id.parent_id.display_name">
+                            <p class="my-1" style="font-size: smaller;">
+                                <strong class="fs-6">Empresa:</strong>
+                                <span t-field="o.partner_id.parent_id.display_name"/>
+                            </p>
+                        </t>
+                        <p class="my-1" style="font-size: smaller;">
+                            <strong class="fs-6">Contacto:</strong>
+                            <span t-field="o.partner_id.name"/>
+                        </p>
+                        <t t-if="o.partner_id.phone or o.partner_id.mobile">
+                            <p class="my-1" style="font-size: smaller;">
+                                <strong class="fs-6">Teléfono:</strong>
+                                <span t-if="o.partner_id.phone" t-field="o.partner_id.phone"/>
+                                <span t-if="o.partner_id.phone and o.partner_id.mobile">/</span>
+                                <span t-if="o.partner_id.mobile" t-field="o.partner_id.mobile"/>
+                            </p>
+                        </t>
+                        <p class="my-1" style="font-size: smaller;">
+                            <strong class="fs-6">Moneda:</strong>
+                            <span t-field="o.currency_id"/>
+                        </p>
+                    </div>
+                    <div class="col-6 text-end" name="company_address">
+                        <ul class="list-unstyled">
+                            <li t-if="company.is_company_details_empty" style="font-size: smaller;">
+                                <strong class="fw-bold fs-6">
+                                    <t t-esc="company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;name&quot;], &quot;no_marker&quot;: true}"/>
+                                </strong>
+                                <strong class="fw-bold" style="color: #1e466c;">
+                                    <t t-esc="company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;email&quot;, &quot;phone&quot;, &quot;address&quot;], &quot;no_marker&quot;: true}"/>
+                                </strong>
+                                <strong class="fw-bold fs-6">RNC:<t t-esc="company.partner_id.vat"/>
+                                </strong>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="article" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+                <t t-raw="0"/>
+            </div>
+            <div class="footer last-page">
+                <div class="row size_footer_total ml-1 mr-1">
+                    <div class="container mt-0 " style="font-size: smaller;">
+                        <h6 class="text-center fw-bold" style="color: #1e466c;">CONDICIONES GENERALES DE LA OFERTA</h6>
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr t-if="o and 'forma_pago' in o">
+                                    <td>Forma de Pago:</td>
+                                    <td>
+                                        <span t-field="o.forma_pago"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Cuenta Bancaria:</td>
+                                    <td>
+                                        <span t-field="o.bank_account_info"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-nowrap">Origen de los Materiales:</td>
+                                    <td>
+                                        <span t-field="o.origen_materiales"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Garantía Comercial:</td>
+                                    <td>
+                                        <p style="display: inline;">
+                                            <span t-field="o.garantia_comercial"/>
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Tiempo de entrega:</td>
+                                    <td>
+                                        <strong>
+                                            <span t-field="o.tiempo_entrega"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template id="sale_order_document">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="doc" t-value="o"/>
+                    <t t-call="technystand_quotation.custom_invoice_external_layout">
+                        <div class="page" style="font-size: smaller;">
+                            <div class="oe_structure"/>
+                            <div class="row o_txt_size">
+                                <table class="table table-sm table-bordered" style="border-color: black; border-width: 2px;">
+                                    <thead>
+                                        <tr class="o_table_header_color text-white text-center fw-bold" style="background-color: #1e466c;">
+                                            <th class="o_table_bordered">
+                                                <span>IMAGEN</span>
+                                            </th>
+                                            <th class="o_table_bordered">
+                                                <span>DESCRIPCION</span>
+                                            </th>
+                                            <th class="o_table_bordered">
+                                                <span>CANT.</span>
+                                            </th>
+                                            <th class="o_table_bordered">
+                                                <span>PRECIO</span>
+                                            </th>
+                                            <!--<th class="o_table_bordered">-->
+                                            <!--    <span>DESC.</span>-->
+                                            <!--</th>-->
+                                            <th class="o_table_bordered">
+                                                <span>SUBTOTAL</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="sale_tbody">
+                                        <!-- Inicializa las variables -->
+                                        <t t-set="current_subtotal" t-value="0"/>
+                                        <t t-set="current_section" t-value="None"/>
+                                        <!-- Recorre las líneas de la orden -->
+                                        <t t-foreach="o.order_line" t-as="table_line">
+                                            <!-- Verifica si comienza una nueva sección -->
+                                            <t t-if="table_line.display_type == 'line_section'">
+                                                <!-- Si hay una sección activa y un subtotal pendiente, muestra el subtotal -->
+                                                <t t-if="current_section and current_subtotal > 0">
+                                                    <tr class="is-subtotal text-end">
+                                                        <td name="td_section_subtotal" colspan="99">
+                                                            <strong class="mr16">Subtotal</strong>
+                                                            <span t-out="current_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <!-- Resetea el subtotal y define la nueva sección -->
+                                                <tr>
+                                                    <td name="td_section_line" colspan="99">
+                                                        <span t-field="table_line.name"/>
+                                                    </td>
+                                                </tr>
+                                                <t t-set="current_section" t-value="table_line"/>
+                                                <t t-set="current_subtotal" t-value="0"/>
+                                            </t>
+                                            <!-- Si es una nota -->
+                                            <t t-elif="table_line.display_type == 'line_note'">
+                                                <tr>
+                                                    <td name="td_note_line" colspan="99">
+                                                        <span t-field="table_line.name"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <!-- Si es una línea de producto -->
+                                            <t t-else="">
+                                                <tr class="o_txt_size_table_data">
+                                                    <td class="text-center">
+                                                        <span t-field="table_line.product_id.image_128" t-options-widget="'image'" t-options-qweb_img_raw_data="1"/>
+                                                    </td>
+                                                    <td>
+                                                        <span t-field="table_line.name"/>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span t-field="table_line.product_uom_qty"/>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span t-field="table_line.price_unit" t-options-display_currency="o.currency_id" t-options-widget="'monetary'"/>
+                                                    </td>
+                                                    <td class="bg-light fw-bold text-center">
+                                                        <span t-field="table_line.price_subtotal"/>
+                                                    </td>
+                                                </tr>
+                                                <!-- Suma al subtotal actual -->
+                                                <t t-set="current_subtotal" t-value="(current_subtotal or 0) + (table_line.price_subtotal or 0)"/>
+                                            </t>
+                                        </t>
+                                        <!-- Muestra el subtotal al final de la última sección -->
+                                        <t t-if="current_section and current_subtotal > 0">
+                                            <tr class="is-subtotal text-end">
+                                                <td name="td_section_subtotal" colspan="99">
+                                                    <strong class="mr16">Subtotal</strong>
+                                                    <span t-out="current_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="oe_structure">
+                                <div class="container mt-0 border">
+                                    <div class="row">
+                                        <div class="col-12 mt-2 text-center text-uppercase">
+                                             <h6 t-field="o.pickup_location"></h6> 
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-6 offset-6">
+                                            <table class="table table-bordered border">
+                                                <tbody>
+                                                    <t t-set="descuento" t-value="o.amount_undiscounted - o.amount_untaxed"/>
+                                                    <tr class="bg-white" t-if="descuento &gt; 0">
+                                                        <td class="text-end">TOTAL SIN DESCUENTO</td>
+                                                        <td class="text-end">
+                                                            <span t-field="o.amount_undiscounted" t-options-widget="'monetary'"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="bg-white" t-if="descuento &gt; 0">
+                                                        <td class="text-end">DESCUENTO</td>
+                                                        <td class="text-end">
+                                                            <span t-esc="descuento" t-options-display_currency="o.currency_id" t-options-widget="'monetary'"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="bg-white">
+                                                        <td class="text-end">SUBTOTAL</td>
+                                                        <td class="text-end">
+                                                            <span t-field="o.amount_untaxed"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="bg-white">
+                                                        <td class="text-end">ITBIS 18%</td>
+                                                        <td class="text-end bg-light">
+                                                            <span t-field="o.amount_tax"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="text-white text-center fw-bold" style="background-color: #1e466c;">
+                                                        <td class="text-end">TOTAL A PAGAR</td>
+                                                        <td class="text-end">
+                                                            <span t-field="o.amount_total"/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
+
+
+

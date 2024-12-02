@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Cotización -->
+        <report id="sale.order_report" model="sale.order" string="Cotización" report_type="qweb-pdf" name="technystand_quotation.sale_order_document" file="technystand_quotation.sale_order_document" attachment="(object.state == 'sale') and ((object.name or 'SO').replace('/','_')+'.pdf')" print_report_name="(object._get_report_base_filename())" groups="sales_team.group_sale_salesman" />
+
+        <record id="custom_invoice_paperformat" model="report.paperformat">
+            <field name="name">Factura</field>
+            <field name="default" eval="True"/>
+            <field name="format">Letter</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">60</field>
+            <field name="margin_bottom">50</field>
+            <field name="margin_left">2</field>
+            <field name="margin_right">2</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">60</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="sale.order_report" model="ir.actions.report">
+            <field name="paperformat_id" ref="technystand_quotation.custom_invoice_paperformat"/>
+        </record>
+
+    </data>
+</odoo>
+
+
+
+
+                   
