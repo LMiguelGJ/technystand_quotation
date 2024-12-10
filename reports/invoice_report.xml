@@ -175,8 +175,8 @@
                                                     </tr>
                                                 </t>
                                                 <!-- Resetea el subtotal y define la nueva sección -->
-                                                <tr>
-                                                    <td name="td_section_line" colspan="99">
+                                                 <tr>
+                                                    <td name="td_section_line" colspan="99" class=" text-center text-uppercase text-white  fw-bold" style="background-color: #4a77a8;">
                                                         <span t-field="table_line.name"/>
                                                     </td>
                                                 </tr>
