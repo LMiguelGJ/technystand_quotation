@@ -1,6 +1,8 @@
 from odoo import models, fields, api
 from collections import defaultdict  
 from odoo.exceptions import UserError 
+import locale
+
 
 class Order(models.Model):
     _inherit = "sale.order"
@@ -60,14 +62,22 @@ class Order(models.Model):
                     current_section = line.name
                 elif current_section and line.display_type is False:  # Si es una línea regular
                     section_totals[current_section] += line.price_subtotal
-
+                    
             # Crear el mensaje en formato de texto
             message = ""
             for section, total in section_totals.items():
-                message += f"{section}: {total:.2f}\n"
+                formatted_total = locale.format_string("%.2f", total, grouping=True)
+                message += f"{section}: {formatted_total}\n"
 
             order.section_totals = message
 
     @api.onchange("order_line")
     def _onchange_order_line(self):
         self.action_calculate_section_totals()
+        
+    @api.onchange("order_line")
+    def _onchange_order_line(self):
+        self.action_calculate_section_totals()
+        for line in self.order_line:
+            if line.display_type == 'line_note_general':  # {{ edit_1 }}
+                line.name = line._get_sale_order_line_multiline_description_sale()  # Hereda el comportamiento de line_note
